@@ -112,9 +112,6 @@ class MemoryDNN:
         m_train = DM.move_data_to_device(m_train)
         self.model = DM.move_model_to_device(self.model)
 
-        # print(f"h_train details before prediction: shape={h_train.shape}, dtype={h_train.dtype}, device={h_train.device}")
-        # print(f"m_train details before prediction: shape={m_train.shape}, dtype={m_train.dtype}, device={m_train.device}")
-
         # 检查h_train和m_train是否含有NaN或Inf值
         if torch.isnan(h_train).any().item() or torch.isinf(h_train).any().item():
             raise ValueError("Input tensor h_train contains NaN or Inf values.")
@@ -122,22 +119,12 @@ class MemoryDNN:
             raise ValueError("Input tensor m_train contains NaN or Inf values.")
 
         # train the DNN
-        '''原本的betas = (0.09,0.999)后续值得商榷，因为通义说此参数一般设为（0.9,0.999）'''
         optimizer = optim.Adam(self.model.parameters(), lr=self.lr,betas = (0.9,0.999),weight_decay=0.0001)
-        '''BCELoss()通义说适用于二分类'''
-        # criterion = nn.BCELoss()
-        '''我更换为SmoothL1Loss试一下，用于处理回归问题'''
         criterion = nn.SmoothL1Loss()
 
         self.model.train() #设置为训练模式（与之相反的是设置为评估模式：model.eval()）
 
-        # 原代码 start -----------------------------------#
         optimizer.zero_grad() #梯度清零
-        # 原代码 end -----------------------------------#
-
-        # 新增代码 start -----------------------------------#
-        # self.optimizer.zero_grad() # 改为采用自定义的优化器
-        # 新增代码 end -----------------------------------#
 
         predict = self.model(h_train)
         if torch.isnan(predict).any().item() or torch.isinf(predict).any().item():
@@ -150,11 +137,6 @@ class MemoryDNN:
         loss = criterion(predict, m_train)
         loss.backward()
 
-        # 新增代码 start -----------------------------------#
-        # 梯度裁剪
-        # torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
-        # 新增代码 end -----------------------------------#
-
         # 检查是否存在NaN或Inf的梯度
         has_invalid_gradients = False
         for param in self.model.parameters():
@@ -163,20 +145,7 @@ class MemoryDNN:
                 has_invalid_gradients = True
 
         if not has_invalid_gradients:
-
-            # 原代码 start -----------------------------------#
             optimizer.step()  # 仅在梯度有效时更新参数
-            # 原代码 end -----------------------------------#
-
-            # 新增代码 start -----------------------------------#
-            # self.optimizer.step() # 改为采用自定义的优化器
-            # 更新学习率
-            # if self.training_step < self.warmup_steps:
-            #     self.warmup_scheduler.step()
-            # else:
-            #     self.scheduler.step()
-            # self.training_step += 1  # 步数累加
-            # 新增代码 end -----------------------------------#
 
         else:
             print("Skipping this batch due to invalid gradients.")
@@ -215,7 +184,6 @@ class MemoryDNN:
         with torch.no_grad(): #禁用梯度计算，减少内存占用并加速推理
             m_pred = self.model(h_tensor)
 
-        # 由于sigmod输出介于0～1之间，无法直接输出0或1，所以需人为的修正预测结果，引入0与1的值
         m_pred = m_pred.detach().cpu().numpy() #将预测结果从 GPU 移动到 CPU 并转换为 numpy 数组
         for i in range(len(m_pred[0])):
             if m_pred[0][i] >= 0.98:

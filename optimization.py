@@ -479,7 +479,7 @@ def t_delay_of_binary_offloading(h, epsilon, G, L, binary_strategy):
 
     return T_delay
 
-# 这里的计算方式也有问题，并不一定是要全功率的，这是一种偷懒的方法，将被舍弃
+# 此方法被舍弃
 def t_delay_of_all_local_all_frequence(h, epsilon, G, L):
     T_delay = np.max(F_WD_MAX**2 * L*G*epsilon / RECHARGE_EFFICIENCY / AP_POWER_W / h ) + np.max(L*G/F_WD_MAX)
     return T_delay

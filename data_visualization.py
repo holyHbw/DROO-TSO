@@ -14,7 +14,6 @@ DROO_TSO_process_time_arr = openfile_getdata("./simulate_result/"+SUB_FOLDER+"DR
 BINARY_process_time_arr = openfile_getdata("./simulate_result/"+SUB_FOLDER+"BINARY_process_time_arr.txt")
 cost_arr = openfile_getdata("./simulate_result/"+SUB_FOLDER+"cost_arr.txt")
 obj_opt_arr = openfile_getdata("./simulate_result/"+SUB_FOLDER+"obj_opt_arr.txt")
-# t0_opt_arr = openfile_getdata("./simulate_result/"+SUB_FOLDER+"t0_opt_arr.txt")
 prediction_trends_mean = openfile_getdata("./simulate_result/"+SUB_FOLDER+"prediction_trends_mean.txt")
 prediction_trends_mean_avg = openfile_getdata("./simulate_result/"+SUB_FOLDER+"prediction_trends_mean_avg.txt")
 prediction_trends_std = openfile_getdata("./simulate_result/"+SUB_FOLDER+"prediction_trends_std.txt")
@@ -24,17 +23,6 @@ prediction_trends_range_avg = openfile_getdata("./simulate_result/"+SUB_FOLDER+"
 strategy = openfile_getdata("./simulate_result/"+SUB_FOLDER+"strategy.txt")
 '''get value'''
 training_interval = int(openfile_getdata("./simulate_result/"+SUB_FOLDER+"TRAINING_INTERVAL.txt")[0])
-# n = int(openfile_getdata("./simulate_result/"+SUB_FOLDER+"n.txt")[0])
-# sampling0 = openfile_getdata("./simulate_result/"+SUB_FOLDER+"sampling0.txt")[0]
-# sampling1 = openfile_getdata("./simulate_result/"+SUB_FOLDER+"sampling1.txt")[0]
-# tloc = openfile_getdata("./simulate_result/"+SUB_FOLDER+"tloc.txt")
-# toff = openfile_getdata("./simulate_result/"+SUB_FOLDER+"toff.txt")
-# E_total = openfile_getdata("./simulate_result/"+SUB_FOLDER+"E_total.txt")
-# E_off = openfile_getdata("./simulate_result/"+SUB_FOLDER+"E_off.txt")
-# E_loc = openfile_getdata("./simulate_result/"+SUB_FOLDER+"E_loc.txt")
-
-# t0 = openfile_getdata("./simulate_result/"+SUB_FOLDER+"tt.txt")[0]
-# Tdelay = openfile_getdata("./simulate_result/"+SUB_FOLDER+"delay1.txt")[0]
 
 # ************************************************2.PLOT loss**********************************************#
 plot_data_pro(np.arange(len(cost_arr)), cost_arr,
@@ -329,10 +317,7 @@ plot_line_with_ax(axins1, np.arange(detail_start, detail_end),
                         DROO_TSO_process_time_arr[detail_start:detail_end],
                         c='r', alpha=0.8,filename=f"{SUB_FOLDER}algo_process_time_comparation")
 
-# ************************************************5.PLOT percentage**********************************************#
-# plot_pie([sampling0,sampling1],['recharge time','computing time'],['g','r'],[0,0],SUB_FOLDER+'percentage')
-
-# ************************************************6.PLOT strategy**********************************************#
+# ************************************************5.PLOT strategy**********************************************#
 fig,ax = plt.subplots(figsize=(10, 6))
 wd = ['WD1', 'WD2', 'WD3', 'WD4', 'WD5', 'WD6', 'WD7', 'WD8', 'WD9', 'WD10']
 strategies_loc = []
@@ -363,60 +348,7 @@ plt.ylabel('The percentage of offload and local computing')  # 纵坐标轴标�
 plt.xlabel('WDs')
 plt.savefig("./simulate_result/" + SUB_FOLDER + "strategy.png", dpi=300, bbox_inches='tight')
 
-# ************************************************7.PLOT time**********************************************#
-# plt.figure()
-# wd = ['t0','t_loc_1', 't_loc_2', 't_loc_3', 't_loc_4', 't_loc_5', 't_loc_6', 't_loc_7', 't_loc_8', 't_loc_9', 't_loc_10','t_off_all']
-# width = 1
-# a=[0]
-# b=[1,2,3,4,5,6,7,8,9,10]
-# c=[11]
-# plt.bar(a,t0,width=width,label='t0',color='g')
-# plt.bar(b,tloc,width=width,label='t_loc',color='b')
-# plt.bar(c,toff[0],width=width,label='t_off_wd1',color='r')
-# plt.bar(c,toff[1],bottom=toff[0],width=width,label='t_off_wd2',color='r')
-# plt.bar(c,toff[2],bottom=toff[0]+toff[1],width=width,label='t_off_wd3',color='r')
-# plt.bar(c,toff[3],bottom=toff[0]+toff[1]+toff[2],width=width,label='t_off_wd34',color='r')
-# plt.bar(c,toff[4],bottom=toff[0]+toff[1]+toff[2]+toff[3],width=width,label='t_off_wd5',color='r')
-# plt.bar(c,toff[5],bottom=toff[0]+toff[1]+toff[2]+toff[3]+toff[4],width=width,label='t_off_wd6',color='r')
-# plt.bar(c,toff[6],bottom=toff[0]+toff[1]+toff[2]+toff[3]+toff[4]+toff[5],width=width,label='t_off_wd7',color='r')
-# plt.bar(c,toff[7],bottom=toff[0]+toff[1]+toff[2]+toff[3]+toff[4]+toff[5]+toff[6],width=width,label='t_off_wd8',color='r')
-# plt.bar(c,toff[8],bottom=toff[0]+toff[1]+toff[2]+toff[3]+toff[4]+toff[5]+toff[6]+toff[7],width=width,label='t_off_wd9',color='r')
-# plt.bar(c,toff[9],bottom=toff[0]+toff[1]+toff[2]+toff[3]+toff[4]+toff[5]+toff[6]+toff[7]+toff[8],width=width,label='t_off_wd10',color='r')
-# plt.xlabel('1')
-# plt.ylabel('2')
-# plt.legend()
-# plt.savefig("./simulate_result/" + SUB_FOLDER + "time_detial.png")
-
-# ************************************************8.PLOT energy**********************************************#
-# plt.figure()
-# a = [0,2,4,6,8,10,12,14,16,18]
-# b = [1,3,5,7,9,11,13,15,17,19]
-# width = 1
-# plt.bar(a,E_total,width=width,label='E_total',color='g')
-# plt.bar(b,E_off,width=width,label='E_off',color='r')
-# plt.bar(b,E_loc,bottom=E_off,width=width,label='E_loc',color='y')
-# plt.xlabel('3')
-# plt.ylabel('4')
-# plt.legend()
-# plt.savefig("./simulate_result/" + SUB_FOLDER + "energy_detial.png")
-
-# ************************************************9.PLOT network mode**********************************************#
-# from torchviz import make_dot
-#
-# LEARNING_RATE = 0.0001
-# TRAINING_INTERVAL = 20
-# BATCH_SIZE = 64
-# Memory = 1024                # capacity of memory structure
-# decoder_mode = 'DELTA_KNN'   # the quantization mode could be 'KNM' or 'KNN' or 'MT_KNN' or 'DELTA_KNN'
-# Delta = 32
-# mem = MemoryDNN(net = [10, 120, 80, 10],
-#                     learning_rate = LEARNING_RATE,
-#                     training_interval=TRAINING_INTERVAL,
-#                     batch_size=BATCH_SIZE,
-#                     memory_size=Memory)
-# make_dot(strategy, params=dict(list(mem.named_parameters()))).render("torchviz", format="png")
-
-# ************************************************10.Prediction trends**********************************************#
+# ************************************************6.Prediction trends**********************************************#
 from config import PREDICTION_AVG_GAP
 fig, ax = plt.subplots(figsize=(10, 6))
 ax.grid(True, linestyle='--',c='grey',alpha=0.4)

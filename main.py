@@ -1,8 +1,6 @@
 #  #################################################################
 #  DROO-TSO Algo
 #  version 2.0 -- Feb 2025. Written by Bowen Huang (3240009761@student.must.edu.mo)
-#  Input: ./data/data_#.mat
-#    Data samples are generated according to the CD method presented in [2]. There are 30,000 samples saved in each ./data/data_#.mat, where # is the user number.
 #  #################################################################
 
 from memory_dnn import MemoryDNN
@@ -52,11 +50,6 @@ if __name__ == "__main__":
 
     for epoch in range(TOTAL_TIME):
 
-        # 每100个epoch打印学习率（新增）
-        # if (epoch + 1) % 100 == 0:
-        #     current_lr = mem.optimizer.param_groups[0]['lr']
-        #     print(f"Epoch {epoch + 1}: Learning Rate = {current_lr:.2e}")
-        #     print(f"Training Steps Completed: {mem.training_step}")
 
         if (epoch+1)%1000 == 0:
             print('SLOT =',epoch+1)
@@ -104,10 +97,8 @@ if __name__ == "__main__":
         # t0_opt_arr.append(t0_temp[np.argmin(obj_value_with_substrategy)])
         # ************************************************TEST**********************************************#
         #进行测试并记录测试数据
-        if epoch % TRAINING_INTERVAL == 0:  # 没必要每个epoch都进行测试，因为dnn也只是间隔TRAINING_INTERVAL才会训练一次。这样做可以提升性能
+        if epoch % TRAINING_INTERVAL == 0:
 
-            # 从测试集中任取一个channel gain参数（这里取了测试集中的第11个元素），测试四种方案的最优delay
-            # 注意⚠️：其中只有TSO的delay值会逐步收敛，其他的delay值都是定值，用于协助刻画TSO的效果
             h_standard_for_test = CHANNEL_GAINS_STANDARDIZED[SPLIT_INDEX + 10, :]
             h_origin_for_test = CHANNEL_GAINS_ORIGIN[SPLIT_INDEX + 10, :]
 
@@ -124,17 +115,14 @@ if __name__ == "__main__":
             delay_test_alllocal, *_ = t_delay_of_all_local_computing(h_origin_for_test, EPSILON, G, L)
 
             # BINARY OFFLOAD TEST
-            BINARY_start_time = time.time()  # 计算每次二分决策的用时时长
-            sub_binary_strategy = generate_binary_policy(N)  # 生成了所有二分卸载决策
+            BINARY_start_time = time.time()
+            sub_binary_strategy = generate_binary_policy(N)
             min_delay = []
             for s in sub_binary_strategy:
                 delay4 = t_delay_of_binary_offloading(h_origin_for_test, EPSILON, G, L, s)
                 min_delay.append(delay4)
             delay_test_binary = np.min(min_delay)
             BINARY_process_time_arr.append(time.time() - BINARY_start_time)
-
-            # 此处还可以加一个cvx的计算时间作为对比
-            # todo: cvx code
 
             TSO_delay_arr.append(delay_test_TSO)
             binary_delay_arr.append(delay_test_binary)

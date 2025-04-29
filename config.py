@@ -79,10 +79,6 @@ PREDICTION_AVG_GAP = 50
 
 #******************************* Parameters for channel gain *************************************
 CHANNEL_GAINS_ORIGIN = 10 ** (-np.random.uniform(30, 40, size=(TOTAL_TIME*2, N))/10) #-30dB～-40dB, 0~?m
-# CHANNEL_GAINS_ORIGIN = 10 ** (-np.random.uniform(30, 60, size=(TOTAL_TIME*2, N))/10) #-30dB～-60dB, 0~10m
-# TRICK_VALUE = 1e4
-# CHANNEL_GAINS_INPUT_TO_MODEL = 10 ** (-np.random.uniform(30, 40, size=(60000,N))/10) * TRICK_VALUE #-30dB～-60dB, 0~10m
-
 # set CHANNEL_GAINS close to 1 for better training
 # Step 1: 对数变换（压缩动态范围）
 log_h = np.log10(CHANNEL_GAINS_ORIGIN)
@@ -92,9 +88,6 @@ log_h_std = log_h.std()
 CHANNEL_GAINS_STANDARDIZED = (log_h - log_h_mean) / log_h_std  #将CHANNEL_GAINS_ORIGIN进行标准化，作为模型的input
 
 SPLIT_INDEX = int(.8 * len(CHANNEL_GAINS_STANDARDIZED)) #use 80% data to train
-
-# print(CHANNEL_GAINS_ORIGIN[1,:])
-# print(CHANNEL_GAINS_STANDARDIZED[1,:])
 
 #******************************* Parameters for file path *************************************
 PIC_PATH = "./simulate_result/"+"N" + str(N) \
